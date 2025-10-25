@@ -8,7 +8,6 @@ export const useChatWithSupabase = (username: string | null) => {
   const [userCount, setUserCount] = useState(0);
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [channel, setChannel] = useState<RealtimeChannel | null>(null);
 
   useEffect(() => {
     if (!username) return;
@@ -64,8 +63,6 @@ export const useChatWithSupabase = (username: string | null) => {
               console.log('Supabase Realtime connected');
             }
           });
-
-        setChannel(realtimeChannel);
 
         // プレゼンス機能でオンラインユーザー数を追跡
         const presenceChannel = supabase.channel('online-users', {
