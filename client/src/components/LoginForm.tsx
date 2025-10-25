@@ -1,14 +1,24 @@
-import { useState, FormEvent } from 'react'
+import { useState, FormEvent, useEffect } from 'react'
 import './LoginForm.css'
 
 interface LoginFormProps {
   onJoin: (username: string) => void
 }
 
+const STORAGE_KEY = 'chat_username'
+
 const LoginForm = ({ onJoin }: LoginFormProps) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+
+  // localStorageからユーザー名を読み込む
+  useEffect(() => {
+    const savedUsername = localStorage.getItem(STORAGE_KEY)
+    if (savedUsername) {
+      setUsername(savedUsername)
+    }
+  }, [])
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
@@ -32,6 +42,9 @@ const LoginForm = ({ onJoin }: LoginFormProps) => {
       setError('パスワードが正しくありません')
       return
     }
+
+    // localStorageにユーザー名を保存
+    localStorage.setItem(STORAGE_KEY, username.trim())
 
     setError('')
     onJoin(username.trim())
