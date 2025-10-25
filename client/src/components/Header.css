@@ -36,39 +36,12 @@
 .header-left {
   display: flex;
   align-items: center;
-  gap: 16px;
-}
-
-.app-icon {
-  font-size: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 52px;
-  height: 52px;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 14px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.app-title-group {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
 }
 
 .chat-header h1 {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
   letter-spacing: 0.5px;
-  margin: 0;
-}
-
-.app-subtitle {
-  font-size: 12px;
-  opacity: 0.85;
-  font-weight: 400;
   margin: 0;
 }
 
@@ -185,22 +158,8 @@
     gap: 14px;
   }
 
-  .header-left {
-    gap: 12px;
-  }
-
-  .app-icon {
-    width: 44px;
-    height: 44px;
-    font-size: 28px;
-  }
-
   .chat-header h1 {
-    font-size: 18px;
-  }
-
-  .app-subtitle {
-    font-size: 11px;
+    font-size: 20px;
   }
 
   .header-right {

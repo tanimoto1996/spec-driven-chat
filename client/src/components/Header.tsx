@@ -11,11 +11,7 @@ const Header = ({ userCount, isConnected, onLeave }: HeaderProps) => {
     <header className="chat-header">
       <div className="header-content">
         <div className="header-left">
-          <div className="app-icon">💬</div>
-          <div className="app-title-group">
-            <h1>Chat App</h1>
-            <p className="app-subtitle">リアルタイムチャット</p>
-          </div>
+          <h1>Chat</h1>
         </div>
         <div className="header-right">
           <div className="status-group">
