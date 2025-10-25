@@ -61,6 +61,16 @@
   margin-top: 8px;
 }
 
+.error-message {
+  padding: 12px;
+  background: #fee;
+  color: var(--error);
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  text-align: center;
+}
+
 .join-button {
   width: 100%;
   padding: 14px;
