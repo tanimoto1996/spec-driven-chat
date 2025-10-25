@@ -23,6 +23,11 @@ export const useChat = (username: string | null) => {
       newSocket.emit('join', { username })
     })
 
+    // メッセージ履歴受信
+    newSocket.on('messageHistory', (history: Message[]) => {
+      setMessages(history)
+    })
+
     // メッセージ受信
     newSocket.on('message', (message: Message) => {
       setMessages(prev => [...prev, message])
