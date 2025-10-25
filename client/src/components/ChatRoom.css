@@ -12,8 +12,8 @@
 
 @media (min-width: 769px) {
   .chat-room {
-    height: 95vh;
-    margin: 2.5vh auto;
+    height: 98vh;
+    margin: 1vh auto;
     border-radius: 16px;
   }
 }
