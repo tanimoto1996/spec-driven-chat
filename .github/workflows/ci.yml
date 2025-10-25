@@ -23,10 +23,16 @@ jobs:
           fi
           echo "✓ 仕様ファイルが存在します"
 
-      - name: OpenAPI仕様の検証
-        uses: char0n/swagger-editor-validate@v1
+      - name: Node.jsセットアップ
+        uses: actions/setup-node@v4
         with:
-          definition-file: specs/api.spec.yaml
+          node-version: '20'
+
+      - name: OpenAPI仕様の検証
+        run: |
+          echo "OpenAPI仕様ファイルの検証..."
+          npx @apidevtools/swagger-cli validate specs/api.spec.yaml
+          echo "✓ OpenAPI仕様が有効です"
 
   # クライアントビルド＆テスト
   client-build:
