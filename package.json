@@ -1,0 +1,30 @@
+{
+  "name": "chat-app-spec-driven",
+  "version": "1.0.0",
+  "description": "Spec-driven chat application with AI-driven development",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+    "dev:client": "cd client && npm run dev",
+    "dev:server": "cd server && npm run dev",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "cd client && npm run build",
+    "build:server": "cd server && npm run build",
+    "spec:validate": "spec-kit validate specs/",
+    "spec:generate": "spec-kit generate specs/ --output src/",
+    "test": "npm run test:client && npm run test:server",
+    "test:client": "cd client && npm test",
+    "test:server": "cd server && npm test"
+  },
+  "keywords": [
+    "chat",
+    "websocket",
+    "spec-driven",
+    "ai-driven"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

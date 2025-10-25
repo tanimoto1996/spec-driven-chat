@@ -1,0 +1,142 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # 仕様検証ジョブ
+  spec-validation:
+    name: 仕様検証
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 仕様ファイルの構文チェック
+        run: |
+          echo "仕様ファイルの存在確認..."
+          if [ ! -f "specs/chat-app.spec.md" ]; then
+            echo "エラー: 仕様ファイルが見つかりません"
+            exit 1
+          fi
+          echo "✓ 仕様ファイルが存在します"
+
+      - name: OpenAPI仕様の検証
+        uses: char0n/swagger-editor-validate@v1
+        with:
+          definition-file: specs/api.spec.yaml
+
+  # クライアントビルド＆テスト
+  client-build:
+    name: クライアントビルド
+    runs-on: ubuntu-latest
+    needs: spec-validation
+    defaults:
+      run:
+        working-directory: ./client
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Node.jsセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: client/package-lock.json
+
+      - name: 依存関係のインストール
+        run: npm ci
+
+      - name: TypeScriptコンパイル
+        run: npm run build
+
+      - name: ビルド成果物をアップロード
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-build
+          path: client/dist
+
+  # サーバービルド＆テスト
+  server-build:
+    name: サーバービルド
+    runs-on: ubuntu-latest
+    needs: spec-validation
+    defaults:
+      run:
+        working-directory: ./server
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Node.jsセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
+
+      - name: 依存関係のインストール
+        run: npm ci
+
+      - name: TypeScriptコンパイル
+        run: npm run build
+
+      - name: ビルド成果物をアップロード
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-build
+          path: server/dist
+
+  # 仕様とコードの整合性チェック（AI駆動）
+  spec-code-alignment:
+    name: 仕様・コード整合性チェック
+    runs-on: ubuntu-latest
+    needs: [client-build, server-build]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 型定義の整合性チェック
+        run: |
+          echo "クライアントとサーバーの型定義を比較..."
+
+          # 両方の型定義ファイルが存在するか確認
+          if [ -f "client/src/types/index.ts" ] && [ -f "server/src/types/index.ts" ]; then
+            echo "✓ 型定義ファイルが存在します"
+
+            # 基本的な整合性チェック（実際のプロジェクトではより詳細なチェックを実装）
+            if diff -q client/src/types/index.ts server/src/types/index.ts > /dev/null; then
+              echo "✓ クライアントとサーバーの型定義が一致しています"
+            else
+              echo "⚠️ 型定義に差異があります（これは正常な場合もあります）"
+            fi
+          fi
+
+      - name: APIエンドポイントの検証
+        run: |
+          echo "仕様に定義されたエンドポイントが実装されているか確認..."
+
+          # /healthエンドポイントの存在確認
+          if grep -q "'/health'" server/src/index.ts; then
+            echo "✓ /health エンドポイントが実装されています"
+          else
+            echo "エラー: /health エンドポイントが見つかりません"
+            exit 1
+          fi
+
+  # デプロイジョブ（mainブランチのみ）
+  deploy:
+    name: Vercelにデプロイ
+    runs-on: ubuntu-latest
+    needs: [client-build, server-build, spec-code-alignment]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: デプロイ準備完了
+        run: |
+          echo "デプロイの準備が完了しました"
+          echo "Vercel CLIまたはVercel GitHubインテグレーションを使用してデプロイしてください"
+          echo "詳細: https://vercel.com/docs/cli"

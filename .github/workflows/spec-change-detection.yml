@@ -1,0 +1,78 @@
+name: 仕様変更検出
+
+on:
+  pull_request:
+    paths:
+      - 'specs/**'
+
+jobs:
+  detect-spec-changes:
+    name: 仕様変更の検出と影響分析
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 変更された仕様ファイルを検出
+        id: changed-specs
+        run: |
+          echo "変更された仕様ファイルを検出中..."
+          CHANGED_FILES=$(git diff --name-only origin/main...HEAD specs/)
+          echo "$CHANGED_FILES"
+          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: 影響範囲の分析
+        run: |
+          echo "## 仕様変更の影響分析 📋" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "以下の仕様ファイルが変更されました:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.changed-specs.outputs.changed_files }}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 確認事項 ✅" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] 型定義の更新が必要か確認" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] APIエンドポイントの変更が必要か確認" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] UIコンポーネントの変更が必要か確認" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] テストケースの更新が必要か確認" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] ドキュメントの更新が必要か確認" >> $GITHUB_STEP_SUMMARY
+
+      - name: PR コメントを追加
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const comment = `## 🔍 仕様変更が検出されました
+
+            このPRには仕様ファイルの変更が含まれています。
+
+            ### 変更されたファイル
+            \`\`\`
+            ${{ steps.changed-specs.outputs.changed_files }}
+            \`\`\`
+
+            ### レビュー時の確認事項
+            - [ ] 仕様変更の内容が妥当か
+            - [ ] 実装コードが仕様に準拠しているか
+            - [ ] テストが仕様をカバーしているか
+            - [ ] 後方互換性への影響はないか
+
+            ### 推奨アクション
+            1. 仕様書の変更内容を確認
+            2. 影響を受けるコードを特定
+            3. 必要な実装変更を実施
+            4. テストケースを更新
+
+            ---
+            *このコメントは自動生成されました*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

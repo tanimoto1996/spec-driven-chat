@@ -1,0 +1,104 @@
+openapi: 3.0.0
+info:
+  title: Chat Application API
+  version: 1.0.0
+  description: Real-time chat application API specification
+
+servers:
+  - url: http://localhost:3001
+    description: Development server
+
+paths:
+  /health:
+    get:
+      summary: Health check endpoint
+      responses:
+        '200':
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  timestamp:
+                    type: number
+                    example: 1640000000000
+
+components:
+  schemas:
+    Message:
+      type: object
+      required:
+        - id
+        - username
+        - content
+        - timestamp
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique message identifier
+        username:
+          type: string
+          minLength: 1
+          maxLength: 20
+          description: Sender's username
+        content:
+          type: string
+          minLength: 1
+          maxLength: 500
+          description: Message content
+        timestamp:
+          type: number
+          description: Unix timestamp in milliseconds
+
+    User:
+      type: object
+      required:
+        - id
+        - username
+        - joinedAt
+      properties:
+        id:
+          type: string
+          description: Socket connection ID
+        username:
+          type: string
+          minLength: 1
+          maxLength: 20
+          description: User's display name
+        joinedAt:
+          type: number
+          description: Unix timestamp when user joined
+
+    JoinRequest:
+      type: object
+      required:
+        - username
+      properties:
+        username:
+          type: string
+          minLength: 1
+          maxLength: 20
+          description: Desired username
+
+    SendMessageRequest:
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          type: string
+          minLength: 1
+          maxLength: 500
+          description: Message content
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
