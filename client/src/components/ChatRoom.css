@@ -19,6 +19,7 @@
 }
 
 .error-banner {
+  flex-shrink: 0;
   background: var(--error);
   color: var(--white);
   padding: 12px 20px;

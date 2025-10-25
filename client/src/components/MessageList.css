@@ -1,6 +1,8 @@
 .message-list {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 20px;
   background: var(--background);
 }
@@ -28,4 +30,10 @@
 
 .message-list::-webkit-scrollbar-thumb:hover {
   background: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+  .message-list {
+    padding: 16px;
+  }
 }
