@@ -26,7 +26,11 @@ export const useChatWithPolling = (username: string | null) => {
         id: msg.id,
         username: msg.username,
         content: msg.content,
-        timestamp: new Date(msg.created_at).getTime()
+        timestamp: new Date(msg.created_at).getTime(),
+        file_url: msg.file_url,
+        file_name: msg.file_name,
+        file_size: msg.file_size,
+        file_type: msg.file_type
       }));
 
       setMessages(formattedMessages);
@@ -63,7 +67,11 @@ export const useChatWithPolling = (username: string | null) => {
         id: msg.id,
         username: msg.username,
         content: msg.content,
-        timestamp: new Date(msg.created_at).getTime()
+        timestamp: new Date(msg.created_at).getTime(),
+        file_url: msg.file_url,
+        file_name: msg.file_name,
+        file_size: msg.file_size,
+        file_type: msg.file_type
       }));
 
       // 最新のメッセージIDより後のメッセージを追加
@@ -111,8 +119,15 @@ export const useChatWithPolling = (username: string | null) => {
     };
   }, [username, fetchMessages, fetchNewMessages]);
 
-  const sendMessage = useCallback(async (content: string) => {
-    if (!username || !content.trim()) return;
+  const sendMessage = useCallback(async (
+    content: string,
+    fileUrl?: string,
+    fileName?: string,
+    fileSize?: number,
+    fileType?: string
+  ) => {
+    if (!username) return;
+    if (!content.trim() && !fileUrl) return;
 
     // クライアント側バリデーション
     if (content.length > 500) {
@@ -125,7 +140,11 @@ export const useChatWithPolling = (username: string | null) => {
         .from('messages')
         .insert({
           username,
-          content: content.trim()
+          content: content.trim() || (fileUrl ? '' : ''),
+          file_url: fileUrl,
+          file_name: fileName,
+          file_size: fileSize,
+          file_type: fileType
         });
 
       if (insertError) throw insertError;

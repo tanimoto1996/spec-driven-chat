@@ -1,0 +1,76 @@
+.file-attachment {
+  margin-top: 8px;
+  max-width: 100%;
+}
+
+.file-image-link {
+  display: block;
+  max-width: 300px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.file-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.file-image:hover {
+  opacity: 0.9;
+}
+
+.file-download-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: background 0.2s;
+}
+
+.file-download-link:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.file-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.file-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-name {
+  font-weight: 500;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-size {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.download-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .file-image-link {
+    max-width: 100%;
+  }
+}

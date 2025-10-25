@@ -1,4 +1,5 @@
 import type { Message } from '../types'
+import FileAttachment from './FileAttachment'
 import './MessageItem.css'
 
 interface MessageItemProps {
@@ -23,7 +24,15 @@ const MessageItem = ({ message, isOwnMessage }: MessageItemProps) => {
         </div>
       )}
       <div className="message-content">
-        {message.content}
+        {message.content && <div>{message.content}</div>}
+        {message.file_url && message.file_name && message.file_size && message.file_type && (
+          <FileAttachment
+            fileUrl={message.file_url}
+            fileName={message.file_name}
+            fileSize={message.file_size}
+            fileType={message.file_type}
+          />
+        )}
       </div>
     </div>
   )
