@@ -1,7 +1,7 @@
 .chat-header {
   background: var(--gradient-blue);
   color: var(--white);
-  padding: 20px 24px;
+  padding: 16px 28px;
   box-shadow: var(--shadow-lg);
   position: relative;
   overflow: hidden;
@@ -14,8 +14,8 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-  animation: shine 3s infinite;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  animation: shine 4s infinite;
 }
 
 @keyframes shine {
@@ -27,69 +27,194 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
+  gap: 20px;
   position: relative;
   z-index: 1;
 }
 
-.chat-header h1 {
-  font-size: 24px;
-  font-weight: 600;
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
-.header-info {
+.app-icon {
+  font-size: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.app-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.chat-header h1 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.app-subtitle {
+  font-size: 12px;
+  opacity: 0.85;
+  font-weight: 400;
+  margin: 0;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.status-group {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
 .status-indicator {
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.status-indicator.connected {
-  background: var(--secondary-color);
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
 }
 
-.status-indicator.disconnected {
-  background: var(--error);
+.status-indicator.connected .status-dot {
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulse 2s infinite;
+}
+
+.status-indicator.disconnected .status-dot {
+  background: #ef4444;
+  box-shadow: 0 0 8px #ef4444;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
 }
 
 .user-count {
-  font-size: 14px;
-  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.user-icon {
+  font-size: 16px;
 }
 
 .leave-button {
-  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
   background: rgba(255, 255, 255, 0.2);
   color: var(--white);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
+  border-radius: 20px;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+}
+
+.button-icon {
+  font-size: 16px;
 }
 
 .leave-button:hover {
   background: rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .leave-button:active {
   transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 @media (max-width: 768px) {
+  .chat-header {
+    padding: 14px 20px;
+  }
+
   .header-content {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .header-left {
+    gap: 12px;
+  }
+
+  .app-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 28px;
+  }
+
+  .chat-header h1 {
+    font-size: 18px;
+  }
+
+  .app-subtitle {
+    font-size: 11px;
+  }
+
+  .header-right {
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .status-group {
+    gap: 10px;
+  }
+
+  .status-indicator,
+  .user-count,
+  .leave-button {
+    font-size: 12px;
+    padding: 5px 12px;
   }
 }
