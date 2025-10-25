@@ -5,7 +5,17 @@
   max-width: 1200px;
   margin: 0 auto;
   background: var(--white);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-xl);
+  border-radius: 0;
+  overflow: hidden;
+}
+
+@media (min-width: 769px) {
+  .chat-room {
+    height: 95vh;
+    margin: 2.5vh auto;
+    border-radius: 16px;
+  }
 }
 
 .error-banner {
