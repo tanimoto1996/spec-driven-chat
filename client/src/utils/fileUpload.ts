@@ -10,10 +10,15 @@ const ALLOWED_FILE_TYPES = [
   'image/webp',
   // ドキュメント
   'application/pdf',
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/vnd.ms-excel',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  // Microsoft Word
+  'application/msword', // .doc
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+  // Microsoft Excel
+  'application/vnd.ms-excel', // .xls
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+  // Microsoft PowerPoint
+  'application/vnd.ms-powerpoint', // .ppt
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation', // .pptx
   // テキスト
   'text/plain',
   'text/csv',
@@ -85,8 +90,9 @@ export const formatFileSize = (bytes: number): string => {
 export const getFileIcon = (fileType: string): string => {
   if (fileType.startsWith('image/')) return '🖼️';
   if (fileType.includes('pdf')) return '📄';
-  if (fileType.includes('word') || fileType.includes('document')) return '📝';
-  if (fileType.includes('excel') || fileType.includes('spreadsheet')) return '📊';
+  if (fileType.includes('word') || fileType.includes('wordprocessingml')) return '📝';
+  if (fileType.includes('excel') || fileType.includes('spreadsheetml')) return '📊';
+  if (fileType.includes('powerpoint') || fileType.includes('presentationml')) return '📊';
   if (fileType.includes('zip')) return '📦';
   if (fileType.startsWith('text/')) return '📃';
   return '📎';

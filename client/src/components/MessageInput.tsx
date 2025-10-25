@@ -120,7 +120,7 @@ const MessageInput = ({ onSendMessage }: MessageInputProps) => {
             type="file"
             onChange={handleFileSelect}
             style={{ display: 'none' }}
-            accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,.zip"
+            accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip"
             disabled={isUploading}
           />
           <button
