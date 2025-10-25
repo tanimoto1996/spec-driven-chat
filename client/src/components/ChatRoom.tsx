@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react'
-import { useChat } from '../hooks/useChat'
+import { useChatWithSupabase } from '../hooks/useChatWithSupabase'
 import MessageList from './MessageList'
 import MessageInput from './MessageInput'
 import Header from './Header'
@@ -11,7 +11,7 @@ interface ChatRoomProps {
 }
 
 const ChatRoom = ({ username, onLeave }: ChatRoomProps) => {
-  const { messages, userCount, isConnected, error, sendMessage } = useChat(username)
+  const { messages, userCount, isConnected, error, sendMessage } = useChatWithSupabase(username)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // 新しいメッセージが来たら自動スクロール
