@@ -26,7 +26,7 @@ app.use(cors());
 app.use(express.json());
 
 // ヘルスチェックエンドポイント（仕様に基づく）
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
   res.json({
     status: 'ok',
     timestamp: Date.now()
