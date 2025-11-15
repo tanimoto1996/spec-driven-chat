@@ -24,7 +24,7 @@ const LoginForm = ({ onJoin }: LoginFormProps) => {
         .from('users')
         .select('*')
         .eq('id', username.trim())
-        .eq('パスワード', password)
+        .eq('password', password)
         .single()
 
       if (error || !data) {
@@ -33,7 +33,7 @@ const LoginForm = ({ onJoin }: LoginFormProps) => {
       }
 
       setError('')
-      onJoin(data.id, data.表示名)
+      onJoin(data.id, data.display_name)
     } catch (error) {
       setError('ログインに失敗しました')
     }

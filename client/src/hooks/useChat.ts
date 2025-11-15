@@ -24,10 +24,10 @@ export const useChat = (username: string | null, displayName: string | null) => 
       if (data) {
         setMessages(data.map(msg => ({
           id: msg.id,
-          username: msg.ユーザー名,
+          username: msg.username,
           displayName: msg.display_name,
-          content: msg.コンテンツ,
-          timestamp: new Date(msg.作成日時).getTime()
+          content: msg.content,
+          timestamp: new Date(msg.created_at).getTime()
         })))
       }
     }
@@ -43,10 +43,10 @@ export const useChat = (username: string | null, displayName: string | null) => 
         (payload) => {
           const newMessage: Message = {
             id: payload.new.id,
-            username: payload.new.ユーザー名,
+            username: payload.new.username,
             displayName: payload.new.display_name,
-            content: payload.new.コンテンツ,
-            timestamp: new Date(payload.new.作成日時).getTime()
+            content: payload.new.content,
+            timestamp: new Date(payload.new.created_at).getTime()
           }
           setMessages(prev => [...prev, newMessage])
         }
@@ -70,9 +70,9 @@ export const useChat = (username: string | null, displayName: string | null) => 
     const { error } = await supabase
       .from('messages')
       .insert({
-        ユーザー名: username,
+        username: username,
         display_name: displayName,
-        コンテンツ: content.trim()
+        content: content.trim()
       })
 
     if (error) {
