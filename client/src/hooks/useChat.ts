@@ -85,7 +85,7 @@ export const useChat = (username: string | null, displayName: string | null) => 
       const fileExt = file.name.split('.').pop()
       const filePath = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
 
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('chat-files')
         .upload(filePath, file)
 
