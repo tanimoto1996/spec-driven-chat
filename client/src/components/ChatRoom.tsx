@@ -1,4 +1,3 @@
-import { useRef, useEffect } from 'react'
 import { useChat } from '../hooks/useChat'
 import MessageList from './MessageList'
 import MessageInput from './MessageInput'
@@ -13,12 +12,6 @@ interface ChatRoomProps {
 
 const ChatRoom = ({ username, displayName, onLeave }: ChatRoomProps) => {
   const { messages, error, sendMessage } = useChat(username, displayName)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-
-  // 新しいメッセージが来たら自動スクロール
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
 
   return (
     <div className="chat-room">
@@ -31,7 +24,6 @@ const ChatRoom = ({ username, displayName, onLeave }: ChatRoomProps) => {
       )}
 
       <MessageList messages={messages} currentUsername={username} />
-      <div ref={messagesEndRef} />
 
       <MessageInput onSendMessage={sendMessage} />
     </div>

@@ -4,7 +4,7 @@
   height: 100vh;
   width: 100%;
   margin: 0 auto;
-  background: #EBF3F7;
+  background: var(--background);
 }
 
 .error-banner {

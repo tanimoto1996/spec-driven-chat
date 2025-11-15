@@ -4,21 +4,25 @@
   align-items: center;
   min-height: 100vh;
   padding: 20px;
-  background: #EBF3F7;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .login-card {
   background: white;
-  padding: 36px 32px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  max-width: 360px;
+  padding: 40px 36px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  max-width: 400px;
   width: 100%;
+  backdrop-filter: blur(10px);
 }
 
 .login-card h1 {
-  font-size: 24px;
-  color: #06C755;
+  font-size: 28px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin-bottom: 8px;
   text-align: center;
   font-weight: 700;
@@ -45,16 +49,19 @@
 
 .form-group input {
   width: 100%;
-  padding: 12px 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
   font-size: 15px;
-  transition: border-color 0.2s;
+  transition: all 0.2s;
+  background: var(--background);
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #06C755;
+  border-color: var(--primary-color);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .error-text {
@@ -67,22 +74,24 @@
 
 .join-button {
   width: 100%;
-  padding: 13px;
-  background: #06C755;
+  padding: 14px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  border-radius: 6px;
-  font-size: 15px;
+  border-radius: 10px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
   margin-top: 8px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
 .join-button:hover {
-  background: #05B04B;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
 }
 
 .join-button:active {
-  transform: scale(0.98);
+  transform: translateY(0);
 }
