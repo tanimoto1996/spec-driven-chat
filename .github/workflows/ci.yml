@@ -24,7 +24,7 @@ jobs:
           node-version: '20'
 
       - name: 依存関係のインストール
-        run: npm ci
+        run: npm install
 
       - name: TypeScriptコンパイル
         run: npm run build
@@ -52,7 +52,7 @@ jobs:
           node-version: '20'
 
       - name: 依存関係のインストール
-        run: npm ci
+        run: npm install
 
       - name: TypeScriptコンパイル
         run: npm run build
