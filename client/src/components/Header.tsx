@@ -8,7 +8,7 @@ const Header = ({ onLeave }: HeaderProps) => {
   return (
     <header className="chat-header">
       <div className="header-content">
-        <h1>チャット</h1>
+        <h1>俺俺チャット</h1>
         <button className="leave-button" onClick={onLeave}>
           ←
         </button>

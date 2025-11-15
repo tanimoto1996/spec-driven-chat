@@ -42,8 +42,8 @@ const LoginForm = ({ onJoin }: LoginFormProps) => {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h1>チャットアプリへようこそ</h1>
-        <p className="subtitle">ユーザー名を入力してチャットに参加しましょう</p>
+        <h1>俺俺チャット</h1>
+        <p className="subtitle">ユーザー名とパスワードを入力してください。</p>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">

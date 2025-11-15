@@ -20,12 +20,12 @@
 
 .message-item.system .message-content {
   display: inline-block;
-  background: rgba(102, 126, 234, 0.08);
+  background: rgba(0, 0, 0, 0.05);
   color: var(--text-secondary);
   padding: 6px 14px;
-  border-radius: 12px;
-  font-size: 13px;
-  font-weight: 500;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 400;
 }
 
 .message-item:not(.system) {
@@ -145,15 +145,15 @@
 }
 
 .message-item.own .message-content {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--line-green);
   color: white;
-  border-bottom-right-radius: 4px;
+  border-bottom-right-radius: 2px;
 }
 
 .message-item.other .message-content {
   background: white;
   color: var(--text-primary);
-  border-bottom-left-radius: 4px;
+  border-bottom-left-radius: 2px;
   border: 1px solid var(--border);
 }
 
