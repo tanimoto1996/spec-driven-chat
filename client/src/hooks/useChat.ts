@@ -26,8 +26,12 @@ export const useChat = (username: string | null, displayName: string | null) => 
           id: msg.id,
           username: msg.username,
           displayName: msg.display_name,
-          content: msg.content,
-          timestamp: new Date(msg.created_at).getTime()
+          content: msg.content || '',
+          timestamp: new Date(msg.created_at).getTime(),
+          fileUrl: msg.file_url,
+          fileName: msg.file_name,
+          fileSize: msg.file_size,
+          fileType: msg.file_type
         })))
       }
     }
@@ -45,8 +49,12 @@ export const useChat = (username: string | null, displayName: string | null) => 
             id: payload.new.id,
             username: payload.new.username,
             displayName: payload.new.display_name,
-            content: payload.new.content,
-            timestamp: new Date(payload.new.created_at).getTime()
+            content: payload.new.content || '',
+            timestamp: new Date(payload.new.created_at).getTime(),
+            fileUrl: payload.new.file_url,
+            fileName: payload.new.file_name,
+            fileSize: payload.new.file_size,
+            fileType: payload.new.file_type
           }
           setMessages(prev => [...prev, newMessage])
         }
@@ -58,8 +66,8 @@ export const useChat = (username: string | null, displayName: string | null) => 
     }
   }, [username, displayName])
 
-  const sendMessage = useCallback(async (content: string) => {
-    if (!username || !displayName || !content.trim()) return
+  const sendMessage = useCallback(async (content: string, file?: File) => {
+    if (!username || !displayName || (!content.trim() && !file)) return
 
     // クライアント側バリデーション
     if (content.length > 500) {
@@ -67,12 +75,47 @@ export const useChat = (username: string | null, displayName: string | null) => 
       return
     }
 
+    let fileUrl = null
+    let fileName = null
+    let fileSize = null
+    let fileType = null
+
+    // ファイルがある場合、Supabase Storageにアップロード
+    if (file) {
+      const fileExt = file.name.split('.').pop()
+      const filePath = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('chat-files')
+        .upload(filePath, file)
+
+      if (uploadError) {
+        setError('ファイルのアップロードに失敗しました')
+        console.error('アップロードエラー:', uploadError)
+        return
+      }
+
+      // 公開URLを取得
+      const { data: { publicUrl } } = supabase.storage
+        .from('chat-files')
+        .getPublicUrl(filePath)
+
+      fileUrl = publicUrl
+      fileName = file.name
+      fileSize = file.size
+      fileType = file.type
+    }
+
     const { error } = await supabase
       .from('messages')
       .insert({
         username: username,
         display_name: displayName,
-        content: content.trim()
+        content: content.trim() || null,
+        file_url: fileUrl,
+        file_name: fileName,
+        file_size: fileSize,
+        file_type: fileType
       })
 
     if (error) {

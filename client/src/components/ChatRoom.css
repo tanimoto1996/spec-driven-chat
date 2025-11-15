@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  max-width: 100%;
+  max-width: 1400px;
   margin: 0 auto;
   background: #EBF3F7;
 }

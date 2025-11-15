@@ -68,6 +68,77 @@
   white-space: pre-wrap;
   line-height: 1.4;
   font-size: 15px;
+  max-width: 100%;
+}
+
+.text-content {
+  margin-bottom: 8px;
+}
+
+.message-content:has(.file-attachment) .text-content {
+  margin-bottom: 8px;
+}
+
+.file-attachment {
+  margin-top: 8px;
+}
+
+.image-preview {
+  max-width: 300px;
+  max-height: 300px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.image-preview:hover {
+  opacity: 0.9;
+}
+
+.file-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.2s;
+}
+
+.file-link:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.message-item.own .file-link {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.message-item.own .file-link:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.file-icon {
+  font-size: 28px;
+}
+
+.file-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-name-display {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-size-display {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: 2px;
 }
 
 .message-item.own .message-content {

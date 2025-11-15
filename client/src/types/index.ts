@@ -6,6 +6,10 @@ export interface Message {
   displayName: string;
   content: string;
   timestamp: number;
+  fileUrl?: string;
+  fileName?: string;
+  fileSize?: number;
+  fileType?: string;
 }
 
 export interface User {

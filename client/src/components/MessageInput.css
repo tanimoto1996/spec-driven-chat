@@ -20,11 +20,58 @@
   border-color: #06C755;
 }
 
+.selected-file {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f0f0f0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.file-name {
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.remove-file-btn {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  color: #999;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.remove-file-btn:hover {
+  color: #666;
+}
+
 .input-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 8px;
+}
+
+.left-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.file-button {
+  font-size: 14px;
+  color: #06C755;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.file-button:hover {
+  background: rgba(6, 199, 85, 0.1);
 }
 
 .char-count {
