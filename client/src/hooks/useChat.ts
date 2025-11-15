@@ -69,10 +69,13 @@ export const useChat = (username: string | null, displayName: string | null) => 
   }, [username, displayName])
 
   const sendMessage = useCallback(async (content: string, file?: File, isStamp?: boolean) => {
-    if (!username || !displayName || (!content.trim() && !file)) return
+    if (!username || !displayName) return
 
-    // クライアント側バリデーション
-    if (content.length > 500 && !isStamp) {
+    // スタンプ、ファイル、メッセージのいずれかが必要
+    if (!isStamp && !file && !content.trim()) return
+
+    // クライアント側バリデーション（スタンプは除外）
+    if (!isStamp && content.length > 500) {
       setError('メッセージは500文字以内で入力してください')
       return
     }
@@ -92,8 +95,8 @@ export const useChat = (username: string | null, displayName: string | null) => 
         .upload(filePath, file)
 
       if (uploadError) {
-        setError('ファイルのアップロードに失敗しました')
         console.error('アップロードエラー:', uploadError)
+        setError(`ファイルのアップロードに失敗しました: ${uploadError.message || '不明なエラー'}`)
         return
       }
 
@@ -122,8 +125,8 @@ export const useChat = (username: string | null, displayName: string | null) => 
       })
 
     if (error) {
-      setError('メッセージの送信に失敗しました')
       console.error('送信エラー:', error)
+      setError(`メッセージの送信に失敗しました: ${error.message || '不明なエラー'}`)
     } else {
       setError(null)
     }
