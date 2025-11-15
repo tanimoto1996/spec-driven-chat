@@ -1,79 +1,65 @@
 import { useState, useEffect, useCallback } from 'react'
-import { io, Socket } from 'socket.io-client'
-import type { Message, UserNotification, UserCountUpdate, ErrorResponse } from '../types'
-
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3001'
+import { supabase } from '../lib/supabase'
+import type { Message } from '../types'
 
 export const useChat = (username: string | null, displayName: string | null) => {
-  const [socket, setSocket] = useState<Socket | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
-  const [userCount, setUserCount] = useState(0)
-  const [isConnected, setIsConnected] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!username || !displayName) return
 
-    const newSocket = io(SOCKET_URL)
-    setSocket(newSocket)
+    // 既存メッセージを取得
+    const fetchMessages = async () => {
+      const { data, error } = await supabase
+        .from('messages')
+        .select('*')
+        .order('created_at', { ascending: true })
 
-    // 接続イベント
-    newSocket.on('connect', () => {
-      setIsConnected(true)
-      newSocket.emit('join', { username, displayName })
-    })
-
-    // メッセージ受信
-    newSocket.on('message', (message: Message) => {
-      setMessages(prev => [...prev, message])
-    })
-
-    // ユーザー参加通知
-    newSocket.on('userJoined', (data: UserNotification) => {
-      const systemMessage: Message = {
-        id: `system-${Date.now()}`,
-        username: 'System',
-        displayName: 'System',
-        content: `${data.username} が参加しました`,
-        timestamp: Date.now()
+      if (error) {
+        console.error('メッセージ取得エラー:', error)
+        return
       }
-      setMessages(prev => [...prev, systemMessage])
-    })
 
-    // ユーザー退室通知
-    newSocket.on('userLeft', (data: UserNotification) => {
-      const systemMessage: Message = {
-        id: `system-${Date.now()}`,
-        username: 'System',
-        displayName: 'System',
-        content: `${data.username} が退室しました`,
-        timestamp: Date.now()
+      if (data) {
+        setMessages(data.map(msg => ({
+          id: msg.id,
+          username: msg.ユーザー名,
+          displayName: msg.display_name,
+          content: msg.コンテンツ,
+          timestamp: new Date(msg.作成日時).getTime()
+        })))
       }
-      setMessages(prev => [...prev, systemMessage])
-    })
+    }
 
-    // オンラインユーザー数更新
-    newSocket.on('userCount', (data: UserCountUpdate) => {
-      setUserCount(data.count)
-    })
+    fetchMessages()
 
-    // エラー処理
-    newSocket.on('error', (data: ErrorResponse) => {
-      setError(data.message)
-    })
-
-    // 切断イベント
-    newSocket.on('disconnect', () => {
-      setIsConnected(false)
-    })
+    // Realtimeサブスクリプション
+    const channel = supabase
+      .channel('messages')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'messages' },
+        (payload) => {
+          const newMessage: Message = {
+            id: payload.new.id,
+            username: payload.new.ユーザー名,
+            displayName: payload.new.display_name,
+            content: payload.new.コンテンツ,
+            timestamp: new Date(payload.new.作成日時).getTime()
+          }
+          setMessages(prev => [...prev, newMessage])
+        }
+      )
+      .subscribe()
 
     return () => {
-      newSocket.close()
+      supabase.removeChannel(channel)
     }
   }, [username, displayName])
 
-  const sendMessage = useCallback((content: string) => {
-    if (!socket || !content.trim()) return
+  const sendMessage = useCallback(async (content: string) => {
+    if (!username || !displayName || !content.trim()) return
 
     // クライアント側バリデーション
     if (content.length > 500) {
@@ -81,14 +67,24 @@ export const useChat = (username: string | null, displayName: string | null) => 
       return
     }
 
-    socket.emit('sendMessage', { content })
-    setError(null)
-  }, [socket])
+    const { error } = await supabase
+      .from('messages')
+      .insert({
+        ユーザー名: username,
+        display_name: displayName,
+        コンテンツ: content.trim()
+      })
+
+    if (error) {
+      setError('メッセージの送信に失敗しました')
+      console.error('送信エラー:', error)
+    } else {
+      setError(null)
+    }
+  }, [username, displayName])
 
   return {
     messages,
-    userCount,
-    isConnected,
     error,
     sendMessage
   }

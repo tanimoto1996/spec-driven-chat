@@ -1,4 +1,5 @@
 import { useState, FormEvent } from 'react'
+import { supabase } from '../lib/supabase'
 import './LoginForm.css'
 
 interface LoginFormProps {
@@ -19,22 +20,22 @@ const LoginForm = ({ onJoin }: LoginFormProps) => {
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: username.trim(), password })
-      })
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', username.trim())
+        .eq('パスワード', password)
+        .single()
 
-      const data = await response.json()
-
-      if (data.success) {
-        setError('')
-        onJoin(data.user.id, data.user.displayName)
-      } else {
-        setError(data.message)
+      if (error || !data) {
+        setError('ユーザー名またはパスワードが正しくありません')
+        return
       }
+
+      setError('')
+      onJoin(data.id, data.表示名)
     } catch (error) {
-      setError('ログインに失敗しました。サーバーに接続できません。')
+      setError('ログインに失敗しました')
     }
   }
 
