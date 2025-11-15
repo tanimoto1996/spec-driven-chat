@@ -23,16 +23,10 @@ jobs:
           fi
           echo "✓ 仕様ファイルが存在します"
 
-      - name: Node.jsセットアップ
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
       - name: OpenAPI仕様の検証
-        run: |
-          echo "OpenAPI仕様ファイルの検証..."
-          npx @apidevtools/swagger-cli validate specs/api.spec.yaml
-          echo "✓ OpenAPI仕様が有効です"
+        uses: char0n/swagger-editor-validate@v1
+        with:
+          definition-file: specs/api.spec.yaml
 
   # クライアントビルド＆テスト
   client-build:
@@ -50,9 +44,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: client/package-lock.json
 
       - name: 依存関係のインストール
-        run: npm install
+        run: npm ci
 
       - name: TypeScriptコンパイル
         run: npm run build
@@ -79,9 +75,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
 
       - name: 依存関係のインストール
-        run: npm install
+        run: npm ci
 
       - name: TypeScriptコンパイル
         run: npm run build
@@ -137,11 +135,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Vercelにデプロイ
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
-          working-directory: ./
+      - name: デプロイ準備完了
+        run: |
+          echo "デプロイの準備が完了しました"
+          echo "Vercel CLIまたはVercel GitHubインテグレーションを使用してデプロイしてください"
+          echo "詳細: https://vercel.com/docs/cli"

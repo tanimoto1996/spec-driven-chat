@@ -2,37 +2,15 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  max-width: 1600px;
+  max-width: 100%;
   margin: 0 auto;
-  background: var(--white);
-  box-shadow: var(--shadow-xl);
-  border-radius: 0;
-  overflow: hidden;
-}
-
-@media (min-width: 769px) {
-  .chat-room {
-    height: 98vh;
-    margin: 1vh auto;
-    border-radius: 16px;
-  }
+  background: #EBF3F7;
 }
 
 .error-banner {
-  flex-shrink: 0;
   background: var(--error);
-  color: var(--white);
-  padding: 12px 20px;
+  color: white;
+  padding: 10px 16px;
   text-align: center;
-  font-size: 14px;
-}
-
-@media (max-width: 768px) {
-  .chat-room {
-    max-width: 100%;
-    width: 100%;
-    margin: 0;
-    border-radius: 0;
-    height: 100vh;
-  }
+  font-size: 13px;
 }

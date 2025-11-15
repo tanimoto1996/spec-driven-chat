@@ -4,37 +4,22 @@
   align-items: center;
   min-height: 100vh;
   padding: 20px;
+  background: #EBF3F7;
 }
 
 .login-card {
-  background: var(--white);
-  padding: 48px;
-  border-radius: 20px;
-  box-shadow: var(--shadow-xl);
-  max-width: 440px;
+  background: white;
+  padding: 36px 32px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 360px;
   width: 100%;
-  animation: fadeInUp 0.5s ease;
-  backdrop-filter: blur(10px);
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .login-card h1 {
-  font-size: 32px;
-  background: var(--gradient-blue);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 12px;
+  font-size: 24px;
+  color: #06C755;
+  margin-bottom: 8px;
   text-align: center;
   font-weight: 700;
 }
@@ -42,89 +27,62 @@
 .subtitle {
   color: var(--text-secondary);
   text-align: center;
-  margin-bottom: 32px;
-  font-size: 14px;
+  margin-bottom: 28px;
+  font-size: 13px;
 }
 
 .form-group {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   font-weight: 500;
   color: var(--text-primary);
+  font-size: 14px;
 }
 
 .form-group input {
   width: 100%;
-  padding: 14px 18px;
-  border: 2px solid var(--border);
-  border-radius: 12px;
-  font-size: 16px;
-  transition: all 0.3s ease;
-  background: var(--white);
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 15px;
+  transition: border-color 0.2s;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  transform: translateY(-1px);
+  border-color: #06C755;
 }
 
 .error-text {
   display: block;
   color: var(--error);
-  font-size: 14px;
-  margin-top: 8px;
-}
-
-.error-message {
-  padding: 12px;
-  background: #fee;
-  color: var(--error);
-  border-radius: 6px;
-  margin-bottom: 16px;
-  font-size: 14px;
+  font-size: 13px;
+  margin-top: 12px;
   text-align: center;
 }
 
 .join-button {
   width: 100%;
-  padding: 16px;
-  background: var(--gradient-blue);
-  color: var(--white);
+  padding: 13px;
+  background: #06C755;
+  color: white;
   border: none;
-  border-radius: 12px;
-  font-size: 17px;
+  border-radius: 6px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
+  transition: background 0.2s;
+  margin-top: 8px;
 }
 
 .join-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(79, 172, 254, 0.4);
+  background: #05B04B;
 }
 
 .join-button:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(79, 172, 254, 0.3);
-}
-
-@media (max-width: 480px) {
-  .login-card {
-    padding: 32px 24px;
-  }
-
-  .login-card h1 {
-    font-size: 28px;
-  }
-
-  .form-group input {
-    font-size: 16px;
-  }
+  transform: scale(0.98);
 }

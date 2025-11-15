@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react'
 import type { Message } from '../types'
 import MessageItem from './MessageItem'
 import './MessageList.css'
@@ -9,13 +8,6 @@ interface MessageListProps {
 }
 
 const MessageList = ({ messages, currentUsername }: MessageListProps) => {
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-
-  // メッセージが更新されたら一番下にスクロール
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
-
   return (
     <div className="message-list">
       {messages.length === 0 ? (
@@ -31,7 +23,6 @@ const MessageList = ({ messages, currentUsername }: MessageListProps) => {
           />
         ))
       )}
-      <div ref={messagesEndRef} />
     </div>
   )
 }

@@ -1,5 +1,4 @@
 import type { Message } from '../types'
-import FileAttachment from './FileAttachment'
 import './MessageItem.css'
 
 interface MessageItemProps {
@@ -19,20 +18,12 @@ const MessageItem = ({ message, isOwnMessage }: MessageItemProps) => {
     <div className={`message-item ${isOwnMessage ? 'own' : 'other'} ${isSystemMessage ? 'system' : ''}`}>
       {!isSystemMessage && (
         <div className="message-header">
-          <span className="username">{message.username}</span>
+          <span className="username">{message.displayName || message.username}</span>
           <span className="timestamp">{formatTime(message.timestamp)}</span>
         </div>
       )}
       <div className="message-content">
-        {message.content && <div>{message.content}</div>}
-        {message.file_url && message.file_name && message.file_size && message.file_type && (
-          <FileAttachment
-            fileUrl={message.file_url}
-            fileName={message.file_name}
-            fileSize={message.file_size}
-            fileType={message.file_type}
-          />
-        )}
+        {message.content}
       </div>
     </div>
   )

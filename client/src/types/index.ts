@@ -3,12 +3,9 @@
 export interface Message {
   id: string;
   username: string;
+  displayName: string;
   content: string;
   timestamp: number;
-  file_url?: string;
-  file_name?: string;
-  file_size?: number;
-  file_type?: string;
 }
 
 export interface User {

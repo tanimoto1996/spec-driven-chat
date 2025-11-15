@@ -1,23 +1,14 @@
 :root {
-  --primary-color: #3b82f6;
-  --primary-dark: #2563eb;
-  --primary-light: #60a5fa;
-  --secondary-color: #10b981;
-  --secondary-dark: #059669;
-  --background: #f3f4f6;
-  --background-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --primary-color: #06C755;
+  --secondary-color: #00B900;
+  --background: #EBF3F7;
   --text-primary: #1f2937;
   --text-secondary: #6b7280;
-  --border: #e5e7eb;
+  --border: #d1d5db;
   --white: #ffffff;
   --error: #ef4444;
-  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
-  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  --gradient-blue: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }
 
 * {
@@ -32,8 +23,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: var(--background-gradient);
-  background-attachment: fixed;
+  background-color: var(--background);
   color: var(--text-primary);
 }
 

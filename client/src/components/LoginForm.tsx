@@ -1,71 +1,58 @@
-import { useState, FormEvent, useEffect } from 'react'
+import { useState, FormEvent } from 'react'
 import './LoginForm.css'
 
 interface LoginFormProps {
-  onJoin: (username: string) => void
+  onJoin: (username: string, displayName: string) => void
 }
-
-const STORAGE_KEY = 'chat_username'
 
 const LoginForm = ({ onJoin }: LoginFormProps) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
 
-  // localStorageからユーザー名を読み込む
-  useEffect(() => {
-    const savedUsername = localStorage.getItem(STORAGE_KEY)
-    if (savedUsername) {
-      setUsername(savedUsername)
-    }
-  }, [])
-
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
 
-    if (!username.trim()) {
-      setError('ユーザー名を入力してください')
+    if (!username.trim() || !password.trim()) {
+      setError('ユーザー名とパスワードを入力してください')
       return
     }
 
-    if (username.length > 20) {
-      setError('ユーザー名は20文字以内で入力してください')
-      return
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:3001'}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: username.trim(), password })
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setError('')
+        onJoin(data.user.id, data.user.displayName)
+      } else {
+        setError(data.message)
+      }
+    } catch (error) {
+      setError('ログインに失敗しました。サーバーに接続できません。')
     }
-
-    if (!password) {
-      setError('パスワードを入力してください')
-      return
-    }
-
-    if (password !== 'mamiya') {
-      setError('パスワードが正しくありません')
-      return
-    }
-
-    // localStorageにユーザー名を保存
-    localStorage.setItem(STORAGE_KEY, username.trim())
-
-    setError('')
-    onJoin(username.trim())
   }
 
   return (
     <div className="login-container">
       <div className="login-card">
-        <h1>チャットアプリ</h1>
-        <p className="subtitle">ユーザー名とパスワードを入力してチャットに参加しましょう</p>
+        <h1>チャットアプリへようこそ</h1>
+        <p className="subtitle">ユーザー名を入力してチャットに参加しましょう</p>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="username">ユーザー名</label>
+            <label htmlFor="username">ユーザーID</label>
             <input
               id="username"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="1-20文字で入力"
-              maxLength={20}
+              placeholder="kikuno, oosima など"
               autoFocus
             />
           </div>
@@ -77,14 +64,14 @@ const LoginForm = ({ onJoin }: LoginFormProps) => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="パスワードを入力"
+              placeholder="パスワード"
             />
           </div>
 
-          {error && <div className="error-message">{error}</div>}
+          {error && <span className="error-text">{error}</span>}
 
           <button type="submit" className="join-button">
-            参加する
+            ログイン
           </button>
         </form>
       </div>

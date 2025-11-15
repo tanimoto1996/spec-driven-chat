@@ -1,39 +1,31 @@
 .message-list {
   flex: 1;
-  min-height: 0;
   overflow-y: auto;
-  overflow-x: hidden;
-  padding: 20px;
-  background: var(--background);
+  padding: 16px;
+  background: #EBF3F7;
 }
 
 .empty-state {
   text-align: center;
   color: var(--text-secondary);
   padding: 40px 20px;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 /* カスタムスクロールバー */
 .message-list::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 .message-list::-webkit-scrollbar-track {
-  background: var(--background);
+  background: transparent;
 }
 
 .message-list::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
 }
 
 .message-list::-webkit-scrollbar-thumb:hover {
-  background: var(--text-secondary);
-}
-
-@media (max-width: 768px) {
-  .message-list {
-    padding: 16px;
-  }
+  background: rgba(0, 0, 0, 0.3);
 }

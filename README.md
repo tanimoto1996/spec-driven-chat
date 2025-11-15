@@ -23,11 +23,11 @@
 - **Vite** - 高速ビルドツール
 - **Socket.io Client** - WebSocket通信
 
-### バックエンド（完全サーバーレス）
-- **Supabase** - BaaS (Backend as a Service)
-- **PostgreSQL** - データベース
-- **Supabase Realtime** - リアルタイム通信（WebSocket代替）
-- **Row Level Security** - セキュリティ
+### バックエンド
+- **Node.js** - サーバーランタイム
+- **Express** - Webフレームワーク
+- **Socket.io** - リアルタイム通信
+- **TypeScript** - 型安全性
 
 ### DevOps
 - **GitHub Actions** - CI/CDパイプライン

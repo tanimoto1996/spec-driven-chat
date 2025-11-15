@@ -1,5 +1,5 @@
 .message-item {
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   animation: slideIn 0.2s ease-out;
 }
 
@@ -20,77 +20,70 @@
 
 .message-item.system .message-content {
   display: inline-block;
-  background: var(--border);
+  background: rgba(0, 0, 0, 0.05);
   color: var(--text-secondary);
-  padding: 6px 12px;
-  border-radius: 12px;
-  font-size: 13px;
-  font-style: italic;
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-size: 12px;
 }
 
 .message-item:not(.system) {
   max-width: 70%;
+  display: flex;
+  flex-direction: column;
 }
 
 .message-item.own {
   margin-left: auto;
+  align-items: flex-end;
 }
 
 .message-item.other {
   margin-right: auto;
+  align-items: flex-start;
 }
 
 .message-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 6px;
-  gap: 12px;
+  margin-bottom: 4px;
+  gap: 8px;
 }
 
 .username {
-  font-weight: 600;
-  color: var(--text-primary);
-  font-size: 14px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 400;
 }
 
 .timestamp {
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .message-content {
-  background: var(--white);
-  padding: 12px 16px;
-  border-radius: 16px;
-  box-shadow: var(--shadow-md);
+  padding: 10px 14px;
+  border-radius: 18px;
   word-wrap: break-word;
   white-space: pre-wrap;
-  line-height: 1.5;
-  transition: all 0.2s ease;
-}
-
-.message-content:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-1px);
+  line-height: 1.4;
+  font-size: 15px;
 }
 
 .message-item.own .message-content {
-  background: var(--gradient-blue);
-  color: var(--white);
-  box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
+  background: #06C755;
+  color: white;
+  border-bottom-right-radius: 4px;
 }
 
-.message-item.own .message-content:hover {
-  box-shadow: 0 6px 16px rgba(79, 172, 254, 0.4);
-}
-
-.message-item.own .username {
-  text-align: right;
+.message-item.other .message-content {
+  background: white;
+  color: var(--text-primary);
+  border-bottom-left-radius: 4px;
 }
 
 @media (max-width: 768px) {
   .message-item:not(.system) {
-    max-width: 85%;
+    max-width: 80%;
   }
 }

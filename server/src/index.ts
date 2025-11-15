@@ -2,10 +2,17 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
+import { createClient } from '@supabase/supabase-js';
 import { ChatService } from './services/ChatService';
 
 const app = express();
 const httpServer = createServer(app);
+
+// Supabaseクライアントの初期化
+const supabase = createClient(
+  process.env.VITE_SUPABASE_URL || '',
+  process.env.VITE_SUPABASE_ANON_KEY || ''
+);
 
 // CORS設定
 const io = new Server(httpServer, {
@@ -19,11 +26,45 @@ app.use(cors());
 app.use(express.json());
 
 // ヘルスチェックエンドポイント（仕様に基づく）
-app.get('/health', (_req, res) => {
+app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
     timestamp: Date.now()
   });
+});
+
+// ログイン認証エンドポイント
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', username)
+      .eq('password', password)
+      .single();
+
+    if (error || !data) {
+      return res.status(401).json({
+        success: false,
+        message: 'ユーザー名またはパスワードが正しくありません'
+      });
+    }
+
+    res.json({
+      success: true,
+      user: {
+        id: data.id,
+        displayName: data.display_name
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'サーバーエラーが発生しました'
+    });
+  }
 });
 
 // チャットサービスの初期化

@@ -1,4 +1,5 @@
-import { useChatWithPolling } from '../hooks/useChatWithPolling'
+import { useState, useRef, useEffect } from 'react'
+import { useChat } from '../hooks/useChat'
 import MessageList from './MessageList'
 import MessageInput from './MessageInput'
 import Header from './Header'
@@ -6,19 +7,22 @@ import './ChatRoom.css'
 
 interface ChatRoomProps {
   username: string
+  displayName: string
   onLeave: () => void
 }
 
-const ChatRoom = ({ username, onLeave }: ChatRoomProps) => {
-  const { messages, userCount, isConnected, error, sendMessage } = useChatWithPolling(username)
+const ChatRoom = ({ username, displayName, onLeave }: ChatRoomProps) => {
+  const { messages, userCount, isConnected, error, sendMessage } = useChat(username, displayName)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  // 新しいメッセージが来たら自動スクロール
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
 
   return (
     <div className="chat-room">
-      <Header
-        userCount={userCount}
-        isConnected={isConnected}
-        onLeave={onLeave}
-      />
+      <Header onLeave={onLeave} />
 
       {error && (
         <div className="error-banner">
@@ -27,6 +31,7 @@ const ChatRoom = ({ username, onLeave }: ChatRoomProps) => {
       )}
 
       <MessageList messages={messages} currentUsername={username} />
+      <div ref={messagesEndRef} />
 
       <MessageInput onSendMessage={sendMessage} />
     </div>

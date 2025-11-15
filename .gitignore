@@ -12,9 +12,6 @@ build/
 .env.local
 .env.production
 
-# Credentials
-.credentials.md
-
 # IDE
 .vscode/
 .idea/
@@ -33,3 +30,10 @@ npm-debug.log*
 # Coverage
 coverage/
 .nyc_output/
+
+# Claude Code
+.claude/
+
+# Credentials
+.credentials.md
+Vercelの情報.md

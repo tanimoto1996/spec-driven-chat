@@ -3,6 +3,7 @@
 export interface Message {
   id: string;
   username: string;
+  displayName: string;
   content: string;
   timestamp: number;
 }
@@ -10,11 +11,13 @@ export interface Message {
 export interface User {
   id: string;
   username: string;
+  displayName: string;
   joinedAt: number;
 }
 
 export interface JoinRequest {
   username: string;
+  displayName: string;
 }
 
 export interface SendMessageRequest {
