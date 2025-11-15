@@ -70,7 +70,7 @@ export const useChat = (username: string | null, displayName: string | null) => 
     return () => {
       newSocket.close()
     }
-  }, [username])
+  }, [username, displayName])
 
   const sendMessage = useCallback((content: string) => {
     if (!socket || !content.trim()) return
