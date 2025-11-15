@@ -7,7 +7,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  background: var(--line-green);
+  background: var(--background);
   padding: 20px;
 }
 
