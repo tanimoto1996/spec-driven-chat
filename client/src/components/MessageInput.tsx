@@ -1,13 +1,15 @@
 import { useState, KeyboardEvent, useRef } from 'react'
+import StampPicker from './StampPicker'
 import './MessageInput.css'
 
 interface MessageInputProps {
-  onSendMessage: (content: string, file?: File) => void
+  onSendMessage: (content: string, file?: File, isStamp?: boolean) => void
 }
 
 const MessageInput = ({ onSendMessage }: MessageInputProps) => {
   const [message, setMessage] = useState('')
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [showStampPicker, setShowStampPicker] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleSend = () => {
@@ -64,6 +66,10 @@ const MessageInput = ({ onSendMessage }: MessageInputProps) => {
     }
   }
 
+  const handleStampSelect = (emoji: string) => {
+    onSendMessage(emoji, undefined, true)
+  }
+
   return (
     <div className="message-input">
       {selectedFile && (
@@ -95,12 +101,25 @@ const MessageInput = ({ onSendMessage }: MessageInputProps) => {
           <label htmlFor="file-input" className="file-button">
             📎 ファイル
           </label>
+          <button
+            type="button"
+            className="file-button"
+            onClick={() => setShowStampPicker(true)}
+          >
+            😊 スタンプ
+          </button>
           <span className="char-count">{message.length}/500</span>
         </div>
         <button onClick={handleSend} disabled={!message.trim() && !selectedFile}>
           送信
         </button>
       </div>
+      {showStampPicker && (
+        <StampPicker
+          onSelect={handleStampSelect}
+          onClose={() => setShowStampPicker(false)}
+        />
+      )}
     </div>
   )
 }

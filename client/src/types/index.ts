@@ -10,6 +10,7 @@ export interface Message {
   fileName?: string;
   fileSize?: number;
   fileType?: string;
+  isStamp?: boolean;
 }
 
 export interface User {

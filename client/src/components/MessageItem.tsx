@@ -31,6 +31,21 @@ const MessageItem = ({ message, isOwnMessage }: MessageItemProps) => {
 
   const isSystemMessage = message.username === 'System'
 
+  // スタンプの場合は特別な表示
+  if (message.isStamp) {
+    return (
+      <div className={`message-item ${isOwnMessage ? 'own' : 'other'} stamp`}>
+        <div className="message-header">
+          <span className="username">{message.displayName || message.username}</span>
+          <span className="timestamp">{formatTime(message.timestamp)}</span>
+        </div>
+        <div className="stamp-content">
+          {message.content}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className={`message-item ${isOwnMessage ? 'own' : 'other'} ${isSystemMessage ? 'system' : ''}`}>
       {!isSystemMessage && (

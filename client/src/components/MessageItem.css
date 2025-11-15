@@ -160,3 +160,17 @@
   border: 1px solid var(--border);
 }
 
+/* スタンプ専用スタイル */
+.message-item.stamp {
+  max-width: none;
+}
+
+.stamp-content {
+  font-size: 80px;
+  line-height: 1;
+  padding: 8px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+

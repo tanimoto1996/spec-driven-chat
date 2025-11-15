@@ -31,7 +31,8 @@ export const useChat = (username: string | null, displayName: string | null) => 
           fileUrl: msg.file_url,
           fileName: msg.file_name,
           fileSize: msg.file_size,
-          fileType: msg.file_type
+          fileType: msg.file_type,
+          isStamp: msg.is_stamp || false
         })))
       }
     }
@@ -54,7 +55,8 @@ export const useChat = (username: string | null, displayName: string | null) => 
             fileUrl: payload.new.file_url,
             fileName: payload.new.file_name,
             fileSize: payload.new.file_size,
-            fileType: payload.new.file_type
+            fileType: payload.new.file_type,
+            isStamp: payload.new.is_stamp || false
           }
           setMessages(prev => [...prev, newMessage])
         }
@@ -66,11 +68,11 @@ export const useChat = (username: string | null, displayName: string | null) => 
     }
   }, [username, displayName])
 
-  const sendMessage = useCallback(async (content: string, file?: File) => {
+  const sendMessage = useCallback(async (content: string, file?: File, isStamp?: boolean) => {
     if (!username || !displayName || (!content.trim() && !file)) return
 
     // クライアント側バリデーション
-    if (content.length > 500) {
+    if (content.length > 500 && !isStamp) {
       setError('メッセージは500文字以内で入力してください')
       return
     }
@@ -115,7 +117,8 @@ export const useChat = (username: string | null, displayName: string | null) => 
         file_url: fileUrl,
         file_name: fileName,
         file_size: fileSize,
-        file_type: fileType
+        file_type: fileType,
+        is_stamp: isStamp || false
       })
 
     if (error) {
