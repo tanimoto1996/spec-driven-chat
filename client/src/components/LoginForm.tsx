@@ -53,7 +53,7 @@ const LoginForm = ({ onJoin }: LoginFormProps) => {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="kikuno, oosima など"
+              placeholder="ユーザ名"
               autoFocus
             />
           </div>
