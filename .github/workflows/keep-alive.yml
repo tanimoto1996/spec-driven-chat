@@ -1,0 +1,62 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    # 6日ごとの午前9時（UTC）に実行
+    - cron: '0 9 */6 * *'
+  workflow_dispatch: # 手動実行も可能に
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          cd client
+          npm install @supabase/supabase-js
+
+      - name: Ping Supabase
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          node -e "
+          const { createClient } = require('@supabase/supabase-js');
+          const supabase = createClient(
+            process.env.VITE_SUPABASE_URL,
+            process.env.VITE_SUPABASE_ANON_KEY
+          );
+
+          (async () => {
+            try {
+              // messagesテーブルから1件取得してアクティビティを維持
+              const { data, error } = await supabase
+                .from('messages')
+                .select('id')
+                .limit(1);
+
+              if (error) {
+                console.error('Error:', error);
+                process.exit(1);
+              }
+
+              console.log('✅ Supabase keep-alive successful!');
+              console.log('Data:', data);
+            } catch (err) {
+              console.error('Failed:', err);
+              process.exit(1);
+            }
+          })();
+          "
+
+      - name: Log success
+        run: echo "Supabase database pinged successfully at $(date)"
