@@ -11,7 +11,7 @@ const Header = ({ onLeave }: HeaderProps) => {
         <button className="leave-button" onClick={onLeave}>
           ←
         </button>
-        <h1>俺俺チャット</h1>
+        <h1>風土チャット</h1>
       </div>
     </header>
   )
