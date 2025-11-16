@@ -110,3 +110,24 @@
 .message-input button:active:not(:disabled) {
   opacity: 0.9;
 }
+
+/* スマホ対応 */
+@media (max-width: 768px) {
+  .left-actions {
+    gap: 8px;
+  }
+
+  .file-button {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+
+  .message-input button {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  .char-count {
+    font-size: 11px;
+  }
+}
