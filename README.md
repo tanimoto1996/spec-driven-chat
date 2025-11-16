@@ -1,19 +1,30 @@
-# Chat App - Spec-Driven Development
+# 風土チャット - リアルタイムチャットアプリケーション
 
-仕様駆動開発 × AI駆動開発によるリアルタイムチャットアプリケーション
+Supabase × React で構築されたLINE風チャットアプリケーション
 
 ## 概要
 
-このプロジェクトは、仕様駆動開発とGitHub Actionsによる自動化を実現したチャットアプリケーションです。仕様ファイルを基に開発を進め、仕様とコードの整合性を自動的にチェックします。
+このプロジェクトは、Supabaseをバックエンドとして使用したリアルタイムチャットアプリケーションです。サーバーレスアーキテクチャで、シンプルかつモダンなチャット体験を提供します。
 
 ## 主な機能
 
-- リアルタイムメッセージング（WebSocket）
-- ユーザー参加/退室通知
-- オンラインユーザー数表示
-- レスポンシブデザイン
-- XSS対策済み
-- 型安全な実装（TypeScript）
+### コア機能
+- ✅ **リアルタイムメッセージング** - Supabase Realtimeによる即座のメッセージ配信
+- ✅ **ユーザー認証** - Supabaseデータベースによる認証
+- ✅ **ファイル共有** - 画像、Word、Excel、PowerPointの添付
+- ✅ **スタンプ機能** - 20種類の絵文字スタンプ
+- ✅ **自動スクロール** - 最新メッセージへの自動スクロール
+
+### UI/UX
+- ✅ **LINE風デザイン** - 使い慣れたインターフェース
+- ✅ **レスポンシブ対応** - PC・スマホ両対応
+- ✅ **表示名対応** - ユーザーIDと表示名の使い分け
+- ✅ **画像プレビュー** - 画像の即座プレビュー表示
+
+### 運用機能
+- ✅ **自動デプロイ** - Vercelによる自動デプロイ
+- ✅ **CI/CD** - GitHub Actionsによる自動ビルド
+- ✅ **Keep-Alive** - Supabase自動停止防止
 
 ## 技術スタック
 
@@ -21,54 +32,100 @@
 - **React 18** - UIライブラリ
 - **TypeScript** - 型安全性
 - **Vite** - 高速ビルドツール
-- **Socket.io Client** - WebSocket通信
+- **CSS3** - スタイリング（LINE風デザイン）
 
-### バックエンド
-- **Node.js** - サーバーランタイム
-- **Express** - Webフレームワーク
-- **Socket.io** - リアルタイム通信
-- **TypeScript** - 型安全性
+### バックエンド（Serverless）
+- **Supabase** - BaaS（Database + Realtime + Storage）
+  - PostgreSQL - リレーショナルデータベース
+  - Realtime - WebSocketベースのリアルタイム通信
+  - Storage - ファイルストレージ
 
-### DevOps
-- **GitHub Actions** - CI/CDパイプライン
+### インフラ
 - **Vercel** - フロントエンドホスティング
-- **OpenAPI** - API仕様管理
+- **GitHub Actions** - CI/CD + 定期実行
 
 ## クイックスタート
+
+### 前提条件
+- Node.js 18以上
+- Supabaseアカウント
+- GitHubアカウント（デプロイする場合）
 
 ### 1. リポジトリのクローン
 
 ```bash
-git clone https://github.com/tanimoto1996/node-typescript-practice.git
-cd node-typescript-practice
+git clone https://github.com/tanimoto1996/spec-driven-chat.git
+cd spec-driven-chat
 ```
 
 ### 2. 依存関係のインストール
 
 ```bash
+cd client
 npm install
-cd client && npm install && cd ..
-cd server && npm install && cd ..
 ```
 
-### 3. 環境変数の設定
+### 3. Supabaseのセットアップ
+
+1. [Supabase](https://supabase.com)でプロジェクトを作成
+2. SQLエディタで以下を実行：
+
+```sql
+-- usersテーブル作成
+CREATE TABLE users (
+  id TEXT PRIMARY KEY,
+  password TEXT NOT NULL,
+  display_name TEXT NOT NULL
+);
+
+-- messagesテーブル作成
+CREATE TABLE messages (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  username TEXT NOT NULL,
+  display_name TEXT NOT NULL,
+  content TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  file_url TEXT,
+  file_name TEXT,
+  file_size INTEGER,
+  file_type TEXT,
+  is_stamp BOOLEAN DEFAULT false
+);
+
+-- Storageバケット作成
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('chat-files', 'chat-files', true);
+
+-- サンプルユーザー追加
+INSERT INTO users (id, password, display_name) VALUES
+  ('kikuno', 'mamiya', '菊野'),
+  ('oosima', 'mamiya', '大嶋'),
+  ('nakamura', 'mamiya', '中村'),
+  ('komiyama', 'mamiya', '小宮山'),
+  ('tanimoto', 'mamiya', '谷本'),
+  ('rosyan', 'mamiya', 'ロシャン');
+```
+
+### 4. 環境変数の設定
 
 ```bash
-# クライアント
-cp client/.env.example client/.env
-
-# サーバー
-cp server/.env.example server/.env
+cd client
+cp .env.example .env
 ```
 
-### 4. 開発サーバーの起動
+`.env`を編集：
+```env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### 5. 開発サーバーの起動
 
 ```bash
 npm run dev
 ```
 
-- クライアント: http://localhost:3000
-- サーバー: http://localhost:3001
+http://localhost:5173 でアクセス可能
 
 詳細は [SETUP.md](./SETUP.md) を参照してください。
 
@@ -76,116 +133,170 @@ npm run dev
 
 ```
 .
-├── specs/                    # 仕様ファイル
-│   ├── chat-app.spec.md     # メイン仕様書
-│   └── api.spec.yaml        # OpenAPI仕様
 ├── client/                   # Reactフロントエンド
 │   └── src/
 │       ├── components/      # UIコンポーネント
+│       │   ├── ChatRoom.tsx          # チャットメイン画面
+│       │   ├── Header.tsx            # ヘッダー
+│       │   ├── LoginForm.tsx         # ログイン画面
+│       │   ├── MessageInput.tsx      # メッセージ入力欄
+│       │   ├── MessageItem.tsx       # メッセージ表示
+│       │   ├── MessageList.tsx       # メッセージリスト
+│       │   └── StampPicker.tsx       # スタンプピッカー
 │       ├── hooks/           # カスタムフック
+│       │   └── useChat.ts            # チャット機能フック
+│       ├── lib/             # ライブラリ設定
+│       │   └── supabase.ts           # Supabaseクライアント
 │       └── types/           # 型定義
-├── server/                   # Node.jsバックエンド
-│   └── src/
-│       ├── services/        # ビジネスロジック
-│       ├── utils/           # ユーティリティ
-│       └── types/           # 型定義
+│           └── index.ts              # 共通型定義
+├── specs/                   # 仕様ファイル
+│   ├── chat-app.spec.md     # アプリケーション仕様
+│   └── api.spec.yaml        # API仕様（レガシー）
 └── .github/workflows/       # CI/CDワークフロー
+    ├── ci.yml               # ビルド・型チェック
+    └── keep-alive.yml       # Supabase自動停止防止
 ```
 
-## 仕様駆動開発
+## データベーススキーマ
 
-このプロジェクトは仕様駆動開発を採用しています。
+### usersテーブル
+| カラム名 | 型 | 説明 |
+|---------|---|------|
+| id | TEXT | ユーザーID（主キー） |
+| password | TEXT | パスワード |
+| display_name | TEXT | 表示名 |
 
-### 仕様ファイル
-
-- `specs/chat-app.spec.md` - 機能要件、UI仕様、テストシナリオ
-- `specs/api.spec.yaml` - OpenAPI 3.0形式のAPI仕様
-
-### 開発フロー
-
-1. **仕様の定義** - `specs/` に要件を記述
-2. **型定義の作成** - 仕様から型を定義
-3. **実装** - 型に基づいて実装
-4. **検証** - GitHub Actionsで自動チェック
-
-### 仕様検証
-
-```bash
-# 仕様ファイルの検証
-npm run spec:validate
-```
-
-## AI駆動開発
-
-GitHub Actionsにより以下を自動化:
-
-### 1. CI/CDパイプライン
-- 仕様の検証
-- TypeScriptコンパイル
-- 型定義の整合性チェック
-- APIエンドポイントの実装確認
-- 自動デプロイ
-
-### 2. 仕様変更検出
-- 仕様ファイル変更の自動検出
-- 影響範囲の分析
-- PRへの自動コメント
-- レビューチェックリストの提供
-
-詳細は [.github/workflows/README.md](./.github/workflows/README.md) を参照してください。
+### messagesテーブル
+| カラム名 | 型 | 説明 |
+|---------|---|------|
+| id | UUID | メッセージID（主キー） |
+| username | TEXT | 送信者ID |
+| display_name | TEXT | 送信者表示名 |
+| content | TEXT | メッセージ本文（NULL可） |
+| created_at | TIMESTAMP | 作成日時 |
+| file_url | TEXT | 添付ファイルURL |
+| file_name | TEXT | ファイル名 |
+| file_size | INTEGER | ファイルサイズ（バイト） |
+| file_type | TEXT | MIMEタイプ |
+| is_stamp | BOOLEAN | スタンプフラグ |
 
 ## デプロイ
 
-### 本番環境へのデプロイ
+### Vercelへのデプロイ
 
-```bash
-# Vercel CLIでデプロイ
-vercel --prod
-```
+1. Vercelアカウントにログイン
+2. GitHubリポジトリを連携
+3. 環境変数を設定：
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+4. ビルド設定：
+   - Build Command: `cd client && npm run build`
+   - Output Directory: `client/dist`
+5. デプロイ実行
 
 詳細は [DEPLOYMENT.md](./DEPLOYMENT.md) を参照してください。
 
-### 自動デプロイ
+### GitHub Actions設定
 
-`main`ブランチへのpushで自動的にデプロイされます。
+自動デプロイとKeep-Alive機能のため、GitHub Secretsに以下を設定：
+
+1. リポジトリ Settings > Secrets and variables > Actions
+2. 以下のシークレットを追加：
+   - `VITE_SUPABASE_URL`: SupabaseプロジェクトURL
+   - `VITE_SUPABASE_ANON_KEY`: Supabase anon key
+
+## 使い方
+
+### ログイン
+1. ログイン画面でユーザーIDとパスワードを入力
+2. デフォルトユーザー：
+   - ID: `kikuno`, `oosima`, `nakamura`, `komiyama`, `tanimoto`, `rosyan`
+   - パスワード: `mamiya`（全ユーザー共通）
+
+### メッセージ送信
+- テキスト入力して「送信」ボタン
+- Enterキーで送信（Shift+Enterで改行）
+- 500文字まで入力可能
+
+### ファイル添付
+- 「📎 ファイル」ボタンをクリック
+- 対応形式：
+  - 画像：JPG, PNG, GIF
+  - ドキュメント：Word (.docx/.doc), Excel (.xlsx/.xls), PowerPoint (.pptx/.ppt)
+- 最大ファイルサイズ：10MB
+
+### スタンプ送信
+- 「😊 スタンプ」ボタンをクリック
+- 20種類の絵文字から選択
+- 通常のメッセージより大きく表示
 
 ## 開発ガイドライン
 
-### ブランチ戦略
-
-- `main` - 本番環境
-- `develop` - 開発環境
-- `feature/*` - 新機能開発
-- `fix/*` - バグ修正
-
-### コミットメッセージ
+### コミットメッセージ規約
 
 ```
 feat: 新機能追加
 fix: バグ修正
-docs: ドキュメント更新
-style: コードフォーマット
+style: デザイン変更
 refactor: リファクタリング
-test: テスト追加
+docs: ドキュメント更新
 chore: ビルド設定など
 ```
 
-### プルリクエスト
+### ブランチ戦略
+- `main` - 本番環境（自動デプロイ）
+- `feature/*` - 新機能開発
+- `fix/*` - バグ修正
 
-1. 仕様変更がある場合は`specs/`を更新
-2. PRを作成
-3. GitHub Actionsの自動チェックを確認
-4. レビュー後にマージ
+## アーキテクチャ
 
-## 今後の拡張予定
+サーバーレスアーキテクチャを採用し、フロントエンドから直接Supabaseに接続します。
 
-- [ ] プライベートメッセージ機能
-- [ ] メッセージ履歴の永続化
-- [ ] ファイル共有機能
-- [ ] リアクション機能
-- [ ] ユーザー認証
-- [ ] E2Eテストの追加
-- [ ] パフォーマンスモニタリング
+```
+[ユーザー]
+    ↓
+[Vercel - React App]
+    ↓
+[Supabase]
+  ├─ Database (PostgreSQL)
+  ├─ Realtime (WebSocket)
+  └─ Storage (Files)
+```
+
+詳細は [ARCHITECTURE.md](./ARCHITECTURE.md) を参照してください。
+
+## トラブルシューティング
+
+### Supabaseが7日で停止する
+- GitHub Actionsの「Keep Supabase Alive」が6日ごとに自動実行
+- 手動実行：Actions > Keep Supabase Alive > Run workflow
+
+### メッセージ送信エラー
+1. **is_stamp カラムエラー**
+   ```sql
+   ALTER TABLE messages ADD COLUMN is_stamp BOOLEAN DEFAULT false;
+   ```
+
+2. **content NOT NULL エラー**
+   ```sql
+   ALTER TABLE messages ALTER COLUMN content DROP NOT NULL;
+   ```
+
+### ファイルアップロードエラー
+- Supabaseで`chat-files`バケットが作成されているか確認
+- バケットがpublicに設定されているか確認
+
+## パフォーマンス最適化
+
+- 画像サイズ：250x250pxに統一
+- メッセージ取得：必要なカラムのみ選択
+- リアルタイム：messagesテーブルのINSERTイベントのみ購読
+
+## セキュリティ
+
+- パスワードは平文保存（本番環境では暗号化推奨）
+- Row Level Security（RLS）は未設定（本番環境では設定推奨）
+- ファイルアップロードはサイズ・形式を検証
 
 ## ライセンス
 
@@ -205,8 +316,7 @@ MIT
 
 - [セットアップガイド](./SETUP.md) - 開発環境のセットアップ
 - [デプロイガイド](./DEPLOYMENT.md) - 本番環境へのデプロイ
-- [仕様書](./specs/README.md) - アプリケーション仕様
-- [ワークフロー](./github/workflows/README.md) - CI/CD設定
+- [アーキテクチャ](./ARCHITECTURE.md) - システム設計と構成
 
 ## サポート
 

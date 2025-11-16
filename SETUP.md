@@ -1,271 +1,350 @@
 # セットアップガイド
 
-## 開発環境のセットアップ
+このガイドでは、開発環境のセットアップ手順を詳しく説明します。
 
-### 前提条件
+## 目次
 
-以下がインストールされていることを確認してください:
-- Node.js 20.x以上
-- npm 10.x以上
-- Git
+1. [前提条件](#前提条件)
+2. [ローカル開発環境のセットアップ](#ローカル開発環境のセットアップ)
+3. [Supabaseのセットアップ](#supabaseのセットアップ)
+4. [環境変数の設定](#環境変数の設定)
+5. [開発サーバーの起動](#開発サーバーの起動)
+6. [トラブルシューティング](#トラブルシューティング)
 
-### インストール手順
+## 前提条件
 
-1. **リポジトリのクローン**
-   ```bash
-   git clone https://github.com/tanimoto1996/node-typescript-practice.git
-   cd node-typescript-practice
-   ```
+以下のソフトウェアがインストールされている必要があります：
 
-2. **ルートの依存関係をインストール**
-   ```bash
-   npm install
-   ```
+- **Node.js**: v18.0.0 以上
+- **npm**: v9.0.0 以上（Node.jsに付属）
+- **Git**: 最新版
 
-3. **クライアントの依存関係をインストール**
-   ```bash
-   cd client
-   npm install
-   cd ..
-   ```
+### インストール確認
 
-4. **サーバーの依存関係をインストール**
-   ```bash
-   cd server
-   npm install
-   cd ..
-   ```
-
-### 環境変数の設定
-
-1. **クライアント環境変数**
-   ```bash
-   cd client
-   cp .env.example .env
-   ```
-
-   `.env`ファイルを編集:
-   ```
-   VITE_SOCKET_URL=http://localhost:3001
-   ```
-
-2. **サーバー環境変数**
-   ```bash
-   cd server
-   cp .env.example .env
-   ```
-
-   `.env`ファイルを編集:
-   ```
-   PORT=3001
-   CLIENT_URL=http://localhost:3000
-   NODE_ENV=development
-   ```
-
-### 開発サーバーの起動
-
-#### 方法1: 統合コマンド（推奨）
-
-ルートディレクトリから:
 ```bash
-npm run dev
+node --version  # v18.0.0以上
+npm --version   # v9.0.0以上
+git --version   # 最新版
 ```
 
-これで、クライアント（ポート3000）とサーバー（ポート3001）が同時に起動します。
+## ローカル開発環境のセットアップ
 
-#### 方法2: 個別に起動
+### 1. リポジトリのクローン
 
-**ターミナル1（サーバー）:**
 ```bash
-cd server
-npm run dev
+git clone https://github.com/tanimoto1996/spec-driven-chat.git
+cd spec-driven-chat
 ```
 
-**ターミナル2（クライアント）:**
+### 2. 依存関係のインストール
+
+```bash
+cd client
+npm install
+```
+
+インストールされる主な依存関係：
+- `react` - UIライブラリ
+- `@supabase/supabase-js` - Supabaseクライアント
+- `typescript` - TypeScript
+- `vite` - ビルドツール
+
+## Supabaseのセットアップ
+
+### 1. Supabaseアカウントの作成
+
+1. [Supabase](https://supabase.com)にアクセス
+2. 「Start your project」をクリック
+3. GitHubアカウントでサインアップ
+
+### 2. 新規プロジェクトの作成
+
+1. 「New Project」をクリック
+2. 以下を入力：
+   - **Name**: `chat-app`（任意）
+   - **Database Password**: 強力なパスワード（メモしておく）
+   - **Region**: `Northeast Asia (Tokyo)` 推奨
+3. 「Create new project」をクリック
+4. プロジェクトの準備が完了するまで待機（約2分）
+
+### 3. データベースのセットアップ
+
+#### 3-1. SQL Editorを開く
+
+1. 左サイドバーの「SQL Editor」をクリック
+2. 「New query」をクリック
+
+#### 3-2. テーブルの作成
+
+以下のSQLをコピー＆ペーストして「Run」をクリック：
+
+```sql
+-- usersテーブル作成
+CREATE TABLE users (
+  id TEXT PRIMARY KEY,
+  password TEXT NOT NULL,
+  display_name TEXT NOT NULL
+);
+
+-- messagesテーブル作成
+CREATE TABLE messages (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  username TEXT NOT NULL,
+  display_name TEXT NOT NULL,
+  content TEXT,  -- NULL許可（ファイルのみ送信可能にするため）
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  file_url TEXT,
+  file_name TEXT,
+  file_size INTEGER,
+  file_type TEXT,
+  is_stamp BOOLEAN DEFAULT false
+);
+
+-- インデックス作成（パフォーマンス向上）
+CREATE INDEX idx_messages_created_at ON messages(created_at DESC);
+CREATE INDEX idx_messages_username ON messages(username);
+```
+
+#### 3-3. サンプルユーザーの追加
+
+```sql
+INSERT INTO users (id, password, display_name) VALUES
+  ('kikuno', 'mamiya', '菊野'),
+  ('oosima', 'mamiya', '大嶋'),
+  ('nakamura', 'mamiya', '中村'),
+  ('komiyama', 'mamiya', '小宮山'),
+  ('tanimoto', 'mamiya', '谷本'),
+  ('rosyan', 'mamiya', 'ロシャン');
+```
+
+### 4. Storageのセットアップ
+
+#### 4-1. バケットの作成
+
+1. 左サイドバーの「Storage」をクリック
+2. 「New bucket」をクリック
+3. 以下を入力：
+   - **Name**: `chat-files`
+   - **Public bucket**: ✅ ON（重要！）
+4. 「Create bucket」をクリック
+
+#### 4-2. バケットの確認
+
+SQL Editorで以下を実行して確認：
+
+```sql
+SELECT * FROM storage.buckets WHERE id = 'chat-files';
+```
+
+`public`カラムが`true`であることを確認してください。
+
+### 5. API認証情報の取得
+
+1. 左サイドバーの「Project Settings」（歯車アイコン）をクリック
+2. 「API」セクションを選択
+3. 以下をコピー：
+   - **Project URL**: `https://xxxxx.supabase.co`
+   - **anon public key**: `eyJhbGci...`（長いトークン）
+
+この2つの値は次のステップで使用します。
+
+## 環境変数の設定
+
+### 1. .envファイルの作成
+
+```bash
+cd client
+cp .env.example .env
+```
+
+### 2. .envファイルの編集
+
+`.env`ファイルを開いて、Supabaseで取得した値を設定：
+
+```env
+VITE_SUPABASE_URL=https://xxxxx.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGci...（長いトークン）
+```
+
+**注意事項**:
+- `.env`ファイルは`.gitignore`に含まれており、Gitにコミットされません
+- 本番環境では別途環境変数を設定する必要があります
+
+## 開発サーバーの起動
+
+### 1. 開発サーバーの起動
+
 ```bash
 cd client
 npm run dev
 ```
 
-### アクセス
-
-ブラウザで以下にアクセス:
-- クライアント: http://localhost:3000
-- サーバーヘルスチェック: http://localhost:3001/health
-
-## プロジェクト構造
+以下のように表示されれば成功です：
 
 ```
-.
-├── specs/                    # 仕様ファイル
-│   ├── chat-app.spec.md     # メイン仕様書
-│   ├── api.spec.yaml        # OpenAPI仕様
-│   └── README.md
-│
-├── client/                   # Reactフロントエンド
-│   ├── src/
-│   │   ├── components/      # Reactコンポーネント
-│   │   ├── hooks/           # カスタムフック
-│   │   ├── types/           # TypeScript型定義
-│   │   ├── App.tsx          # メインアプリ
-│   │   └── main.tsx         # エントリーポイント
-│   ├── index.html
-│   ├── package.json
-│   └── vite.config.ts
-│
-├── server/                   # Node.jsバックエンド
-│   ├── src/
-│   │   ├── services/        # ビジネスロジック
-│   │   ├── types/           # TypeScript型定義
-│   │   ├── utils/           # ユーティリティ
-│   │   └── index.ts         # エントリーポイント
-│   ├── package.json
-│   └── tsconfig.json
-│
-├── .github/
-│   └── workflows/           # GitHub Actionsワークフロー
-│       ├── ci.yml
-│       └── spec-change-detection.yml
-│
-├── package.json             # ルートpackage.json
-├── vercel.json              # Vercel設定
-├── README.md
-├── SETUP.md                 # このファイル
-└── DEPLOYMENT.md            # デプロイガイド
+  VITE v5.x.x  ready in xxx ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+  ➜  press h + enter to show help
 ```
 
-## 開発ワークフロー
+### 2. アプリケーションへのアクセス
 
-### 1. 仕様駆動開発
+ブラウザで http://localhost:5173 を開きます。
 
-新機能を追加する際:
+### 3. ログインテスト
 
-1. **仕様を更新**
-   ```bash
-   # specs/chat-app.spec.mdを編集
-   ```
+以下のユーザーでログインできることを確認：
 
-2. **仕様を検証**
-   ```bash
-   npm run spec:validate
-   ```
-
-3. **実装**
-   - 型定義を更新（`client/src/types/`, `server/src/types/`）
-   - コンポーネント/サービスを実装
-
-4. **テスト**
-   ```bash
-   npm test
-   ```
-
-### 2. Git操作
-
-```bash
-# 新機能ブランチを作成
-git checkout -b feature/new-feature
-
-# 変更をコミット
-git add .
-git commit -m "feat: 新機能を追加"
-
-# プッシュ
-git push origin feature/new-feature
-
-# GitHubでPRを作成
-```
-
-### 3. CI/CDパイプライン
-
-PR作成時に自動実行:
-- 仕様の検証
-- TypeScriptコンパイル
-- ビルド確認
-- 仕様とコードの整合性チェック
-
-### 4. デプロイ
-
-`main`ブランチへのマージで自動デプロイ（GitHub Actions設定済み）
-
-## 便利なコマンド
-
-### ビルド
-
-```bash
-# 全体をビルド
-npm run build
-
-# クライアントのみ
-npm run build:client
-
-# サーバーのみ
-npm run build:server
-```
-
-### テスト
-
-```bash
-# 全体をテスト
-npm test
-
-# クライアントのみ
-npm run test:client
-
-# サーバーのみ
-npm run test:server
-```
-
-### コード品質
-
-```bash
-# 型チェック（クライアント）
-cd client && npx tsc --noEmit
-
-# 型チェック（サーバー）
-cd server && npx tsc --noEmit
-```
+- **ユーザーID**: `kikuno`
+- **パスワード**: `mamiya`
 
 ## トラブルシューティング
 
-### ポートが使用中
+### npm installエラー
 
+#### エラー: `EACCES: permission denied`
+
+**解決策**:
 ```bash
-# プロセスを確認
-lsof -i :3000
-lsof -i :3001
-
-# プロセスを終了
-kill -9 <PID>
+sudo chown -R $USER:$GROUP ~/.npm
+sudo chown -R $USER:$GROUP ~/.config
 ```
 
-### 依存関係のエラー
+#### エラー: `ERESOLVE unable to resolve dependency tree`
 
+**解決策**:
 ```bash
-# node_modulesを削除して再インストール
-rm -rf node_modules client/node_modules server/node_modules
-rm package-lock.json client/package-lock.json server/package-lock.json
-npm install
-cd client && npm install && cd ..
-cd server && npm install && cd ..
+npm install --legacy-peer-deps
 ```
 
-### WebSocket接続エラー
+### Supabase接続エラー
 
-1. サーバーが起動しているか確認
-2. ポート番号が正しいか確認
-3. CORS設定を確認
-4. ブラウザのコンソールでエラーを確認
+#### エラー: `Failed to fetch`
+
+**原因**: 環境変数が正しく設定されていない
+
+**解決策**:
+1. `.env`ファイルの内容を確認
+2. `VITE_SUPABASE_URL`と`VITE_SUPABASE_ANON_KEY`が正しいか確認
+3. 開発サーバーを再起動（Ctrl+C → `npm run dev`）
+
+#### エラー: `relation "messages" does not exist`
+
+**原因**: テーブルが作成されていない
+
+**解決策**:
+1. Supabase SQL Editorを開く
+2. テーブル作成SQLを再実行
+
+### ログインエラー
+
+#### エラー: `ユーザー名またはパスワードが正しくありません`
+
+**解決策**:
+1. Supabase Table Editorで`users`テーブルを確認
+2. ユーザーが存在するか確認
+3. パスワードが`mamiya`であることを確認
+
+### ファイルアップロードエラー
+
+#### エラー: `ファイルのアップロードに失敗しました`
+
+**原因1**: `chat-files`バケットが存在しない
+
+**解決策**:
+```sql
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('chat-files', 'chat-files', true);
+```
+
+**原因2**: バケットがpublicでない
+
+**解決策**:
+```sql
+UPDATE storage.buckets
+SET public = true
+WHERE id = 'chat-files';
+```
+
+### スタンプ送信エラー
+
+#### エラー: `Could not find the 'is_stamp' column`
+
+**原因**: `is_stamp`カラムが存在しない
+
+**解決策**:
+```sql
+ALTER TABLE messages
+ADD COLUMN is_stamp BOOLEAN DEFAULT false;
+```
+
+### 画像のみ送信エラー
+
+#### エラー: `null value in column "content" violates not-null constraint`
+
+**原因**: `content`カラムがNOT NULL制約を持っている
+
+**解決策**:
+```sql
+ALTER TABLE messages
+ALTER COLUMN content DROP NOT NULL;
+```
+
+## 開発のヒント
+
+### ホットリロード
+
+Viteは自動的にファイル変更を検知して再読み込みします。変更を保存するだけでブラウザに反映されます。
+
+### TypeScriptエラーの確認
+
+```bash
+npm run type-check
+```
+
+### ビルドテスト
+
+本番ビルドをテスト：
+
+```bash
+npm run build
+npm run preview
+```
+
+### Supabaseのログ確認
+
+Supabase Dashboard > Logs で以下を確認できます：
+- データベースクエリ
+- Realtime接続
+- Storage操作
+
+### ローカルでのSupabase開発
+
+より高度な開発には、Supabase CLIを使用したローカル開発環境も利用可能です：
+
+```bash
+# Supabase CLIのインストール
+npm install -g supabase
+
+# ローカル環境の起動
+supabase start
+
+# マイグレーションの作成
+supabase migration new create_tables
+```
+
+詳細は [Supabase Local Development](https://supabase.com/docs/guides/cli/local-development) を参照してください。
 
 ## 次のステップ
 
-1. **機能追加**: `specs/`の仕様を更新して新機能を計画
-2. **テスト追加**: Vitestでテストカバレッジを向上
-3. **デプロイ**: `DEPLOYMENT.md`を参照して本番環境にデプロイ
-4. **拡張**: プライベートメッセージ、ファイル共有などの機能を追加
+セットアップが完了したら：
+
+1. [README.md](./README.md) でアプリケーション機能を確認
+2. [ARCHITECTURE.md](./ARCHITECTURE.md) でシステム構成を理解
+3. [DEPLOYMENT.md](./DEPLOYMENT.md) でデプロイ方法を学習
 
 ## サポート
 
-問題が発生した場合:
-- GitHubのIssueを作成
-- ドキュメントを確認
-- ログファイルを確認
+問題が解決しない場合は、[GitHub Issues](https://github.com/tanimoto1996/spec-driven-chat/issues)で質問してください。
