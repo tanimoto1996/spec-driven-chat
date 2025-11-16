@@ -20,9 +20,7 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        run: |
-          cd client
-          npm install @supabase/supabase-js
+        run: npm install @supabase/supabase-js
 
       - name: Ping Supabase
         env:
