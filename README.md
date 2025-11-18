@@ -95,15 +95,6 @@ CREATE TABLE messages (
 -- Storageバケット作成
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('chat-files', 'chat-files', true);
-
--- サンプルユーザー追加
-INSERT INTO users (id, password, display_name) VALUES
-  ('kikuno', 'mamiya', '菊野'),
-  ('oosima', 'mamiya', '大嶋'),
-  ('nakamura', 'mamiya', '中村'),
-  ('komiyama', 'mamiya', '小宮山'),
-  ('tanimoto', 'mamiya', '谷本'),
-  ('rosyan', 'mamiya', 'ロシャン');
 ```
 
 ### 4. 環境変数の設定
@@ -209,9 +200,6 @@ http://localhost:5173 でアクセス可能
 
 ### ログイン
 1. ログイン画面でユーザーIDとパスワードを入力
-2. デフォルトユーザー：
-   - ID: `kikuno`, `oosima`, `nakamura`, `komiyama`, `tanimoto`, `rosyan`
-   - パスワード: `mamiya`（全ユーザー共通）
 
 ### メッセージ送信
 - テキスト入力して「送信」ボタン
